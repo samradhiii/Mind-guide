@@ -1,4 +1,5 @@
-const API_BASE = 'http://127.0.0.1:8000';
+// Update this to your backend URL after deploying
+const API_BASE = 'https://your-backend.vercel.app';
 
 function getToken() {
   return localStorage.getItem('token');
