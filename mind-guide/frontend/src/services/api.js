@@ -1,5 +1,4 @@
-// Update this to your backend URL after deploying
-const API_BASE = 'https://your-backend.vercel.app';
+const API_BASE = 'https://mind-guide-r3yx-ml1y3hvim-samradhi-guptas-projects.vercel.app';
 
 function getToken() {
   return localStorage.getItem('token');
