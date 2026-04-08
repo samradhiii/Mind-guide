@@ -1,0 +1,22 @@
+[
+  {
+    "id": "ce831a6c-6bfd-41f4-a7ba-0cd84b053470",
+    "email": "raj112@gmail.com",
+    "password_hash": "$2b$12$eno3K8v0w1Qc44PwO1CjwuJk7rR90M9MVNZJGJFinRnT1E7GyweyG",
+    "name": "raj",
+    "age": 18,
+    "intro": "i am a genius",
+    "created_at": "2026-01-15T17:13:18.132792+00:00",
+    "updated_at": "2026-01-15T17:13:18.133304+00:00"
+  },
+  {
+    "id": "19651ba7-a2bf-4b74-9a85-b185968446b8",
+    "email": "abc@abc.com",
+    "password_hash": "$2b$12$v4PTGHcx4JjtuwPfXpiN5eszmZAPfRchf9lBms1zH5rKzj8T.wayG",
+    "name": "Amaan",
+    "age": 22,
+    "intro": "Rage induced hail mary",
+    "created_at": "2026-04-08T17:11:31.840962+00:00",
+    "updated_at": "2026-04-08T17:11:31.841001+00:00"
+  }
+]

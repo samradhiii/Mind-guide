@@ -1,0 +1,136 @@
+[
+  {
+    "id": "1840438f-8623-4418-8c64-7843f9eff314",
+    "user_id": "ce831a6c-6bfd-41f4-a7ba-0cd84b053470",
+    "timestamp": "2026-01-15T17:13:31.568525+00:00",
+    "role": "user",
+    "message": "hii"
+  },
+  {
+    "id": "879c79c9-f529-4797-909d-76c2960db7da",
+    "user_id": "ce831a6c-6bfd-41f4-a7ba-0cd84b053470",
+    "timestamp": "2026-01-15T17:13:31.568525+00:00",
+    "role": "assistant",
+    "message": "raj, I’m here with you. Here are a few small, practical steps you can try:",
+    "mood": "neutral",
+    "is_crisis": false,
+    "helplines": {},
+    "advice": [
+      "Want to tell me what’s been on your mind today?",
+      "If you prefer, we can focus on sleep, stress, focus, or motivation — your choice."
+    ],
+    "quote": "Breathe. This moment will pass."
+  },
+  {
+    "id": "3718998d-1811-47e5-a4be-87a0d18b7c3e",
+    "user_id": "ce831a6c-6bfd-41f4-a7ba-0cd84b053470",
+    "timestamp": "2026-01-15T17:13:49.059872+00:00",
+    "role": "user",
+    "message": "i am nerveous today"
+  },
+  {
+    "id": "c55261e4-4151-4b28-9923-ea010d5f5c75",
+    "user_id": "ce831a6c-6bfd-41f4-a7ba-0cd84b053470",
+    "timestamp": "2026-01-15T17:13:49.060890+00:00",
+    "role": "assistant",
+    "message": "raj, I’m here with you. Here are a few small, practical steps you can try:",
+    "mood": "neutral",
+    "is_crisis": false,
+    "helplines": {},
+    "advice": [
+      "Want to tell me what’s been on your mind today?",
+      "If you prefer, we can focus on sleep, stress, focus, or motivation — your choice."
+    ],
+    "quote": "You don’t have to solve everything today."
+  },
+  {
+    "id": "b46276ba-b567-42cf-8fe7-1f2194c85ea1",
+    "user_id": "ce831a6c-6bfd-41f4-a7ba-0cd84b053470",
+    "timestamp": "2026-01-15T17:39:25.868482+00:00",
+    "role": "user",
+    "message": "hii"
+  },
+  {
+    "id": "08d208e5-b393-4b77-8469-cb9da7828681",
+    "user_id": "ce831a6c-6bfd-41f4-a7ba-0cd84b053470",
+    "timestamp": "2026-01-15T17:39:25.868482+00:00",
+    "role": "assistant",
+    "message": "raj, I’m here with you. Here are a few small, practical steps you can try:",
+    "mood": "neutral",
+    "is_crisis": false,
+    "helplines": {},
+    "advice": [
+      "Want to tell me what’s been on your mind today?",
+      "If you prefer, we can focus on sleep, stress, focus, or motivation — your choice."
+    ],
+    "quote": "Be as kind to yourself as you would be to a friend."
+  },
+  {
+    "id": "4de4696b-dfb3-401a-a460-faa48b83fc8d",
+    "user_id": "19651ba7-a2bf-4b74-9a85-b185968446b8",
+    "timestamp": "2026-04-08T17:11:47.112191+00:00",
+    "role": "user",
+    "message": "Feeling down"
+  },
+  {
+    "id": "bd3745ee-a073-4ead-b017-25e03b94cbb9",
+    "user_id": "19651ba7-a2bf-4b74-9a85-b185968446b8",
+    "timestamp": "2026-04-08T17:11:47.112290+00:00",
+    "role": "assistant",
+    "message": "Amaan, I hear you — that sounds painful. Here are a few small, practical steps you can try:",
+    "mood": "sad",
+    "is_crisis": false,
+    "helplines": {},
+    "advice": [
+      "If it feels heavy, aim for one gentle win: shower, sunlight, or a short call with someone safe.",
+      "Write one sentence: ‘What I need right now is…’ and answer honestly.",
+      "Lower the bar for today — consistency over intensity."
+    ],
+    "quote": "Be as kind to yourself as you would be to a friend."
+  },
+  {
+    "id": "450afe05-9acf-4ac0-b7c9-9389d2fc8599",
+    "user_id": "19651ba7-a2bf-4b74-9a85-b185968446b8",
+    "timestamp": "2026-04-08T17:12:22.424500+00:00",
+    "role": "user",
+    "message": "I feel sad"
+  },
+  {
+    "id": "5b0a315b-8784-4d47-99c3-9280d07fed85",
+    "user_id": "19651ba7-a2bf-4b74-9a85-b185968446b8",
+    "timestamp": "2026-04-08T17:12:22.424570+00:00",
+    "role": "assistant",
+    "message": "Amaan, I hear you — that sounds painful. Here are a few small, practical steps you can try:",
+    "mood": "sad",
+    "is_crisis": false,
+    "helplines": {},
+    "advice": [
+      "If it feels heavy, aim for one gentle win: shower, sunlight, or a short call with someone safe.",
+      "Write one sentence: ‘What I need right now is…’ and answer honestly.",
+      "Lower the bar for today — consistency over intensity."
+    ],
+    "quote": "Small steps still move you forward."
+  },
+  {
+    "id": "1c20221b-3e44-459b-9826-cfc7c65b607b",
+    "user_id": "19651ba7-a2bf-4b74-9a85-b185968446b8",
+    "timestamp": "2026-04-08T17:17:43.055039+00:00",
+    "role": "user",
+    "message": "I feel sad"
+  },
+  {
+    "id": "bff261f8-9f22-49fb-9665-50a9171b5e3d",
+    "user_id": "19651ba7-a2bf-4b74-9a85-b185968446b8",
+    "timestamp": "2026-04-08T17:17:43.055094+00:00",
+    "role": "assistant",
+    "message": "Amaan, I'm really sorry you're feeling this way. Sadness is one of the most human experiences we have, and it deserves to be felt, not pushed away.\n\nYou don't have to pretend with me. If you want to talk about what's making you sad, I'm here to listen without judgment.\n\nSometimes when we're sad, a few things can help ease the weight even just a little:\n- Getting some fresh air or sunlight\n- Moving your body gently, even just a short walk\n- Reaching out to someone who cares about you\n\nBut right now, what I want you to know is this: whatever you're going through, this feeling isn't permanent. Feelings move through us like waves. You're not alone.",
+    "mood": "sad",
+    "is_crisis": false,
+    "helplines": {},
+    "advice": [
+      "Get some sunlight if possible",
+      "Reach out to someone you trust"
+    ],
+    "quote": "Small steps still move you forward."
+  }
+]
