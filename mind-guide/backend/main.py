@@ -14,17 +14,19 @@ from utils import load_json, save_json, utc_now_iso
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STORAGE_DIR = os.path.join(BASE_DIR, "storage")
+STORAGE_DIR = os.path.join("/tmp", "mind_guide_storage") if os.getenv("VERCEL") else os.path.join(BASE_DIR, "storage")
 USERS_FILE = os.path.join(STORAGE_DIR, "users.json")
 CHECKINS_FILE = os.path.join(STORAGE_DIR, "checkins.json")
 CHATS_FILE = os.path.join(STORAGE_DIR, "chats.json")
+
+os.makedirs(STORAGE_DIR, exist_ok=True)
 
 
 app = FastAPI(title="MIND-GUIDE API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
