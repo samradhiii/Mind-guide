@@ -3,14 +3,9 @@ from __future__ import annotations
 import json
 import os
 import re
+import random
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Any
-
-try:
-    from groq import Groq
-    GROQ_AVAILABLE = True
-except ImportError:
-    GROQ_AVAILABLE = False
 
 
 @dataclass
@@ -100,129 +95,14 @@ def detect_mood(text: str) -> str:
     return "neutral"
 
 
-def _build_counselor_system_prompt() -> str:
-    return """You are MindGuide, an empathetic and supportive AI wellness counselor. You are warm, understanding, and non-judgmental.
-
-Your approach:
-1. Acknowledge the user's feelings with genuine empathy
-2. Ask thoughtful follow-up questions to understand better
-3. Offer practical, actionable suggestions
-4. If appropriate, suggest relaxation techniques or exercises
-5. Always be encouraging and supportive
-
-Crisis situations - if someone expresses suicidal thoughts or self-harm:
-- Respond with immediate empathy and concern
-- Express that their life matters
-- Strongly encourage them to reach out for professional help
-- Provide crisis helpline numbers
-- NEVER dismiss or minimize their feelings
-
-Keep responses conversational, warm, and around 2-4 paragraphs unless the situation requires more. Use simple, accessible language."""
-
-
-def _get_groq_client() -> Optional[Any]:
-    if not GROQ_AVAILABLE:
-        return None
-    
-    api_key = os.getenv("GROQ_API_KEY")
-    if not api_key:
-        return None
-    
-    try:
-        return Groq(api_key=api_key)
-    except Exception:
-        return None
-
-
 async def _generate_llm_response(
     user_message: str,
     user_profile: Dict[str, str],
     mood: str,
     chat_history: Optional[List[Dict]] = None
 ) -> Dict[str, Any]:
-    client = _get_groq_client()
-    
-    if not client:
-        return _fallback_response(mood, user_profile)
-    
-    name = user_profile.get("name", "friend")
-    
-    messages = [
-        {"role": "system", "content": _build_counselor_system_prompt()},
-    ]
-    
-    if chat_history:
-        for msg in chat_history[-6:]:
-            role = "assistant" if msg.get("role") == "assistant" else "user"
-            messages.append({
-                "role": role,
-                "content": msg.get("message", "")
-            })
-    
-    user_context = f"\n\nContext: The user is named {name}, {user_profile.get('age', 'unknown')} years old. They described themselves as: {user_profile.get('intro', 'N/A')}"
-    messages.append({
-        "role": "user", 
-        "content": user_message + user_context
-    })
-    
-    try:
-        response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=messages,
-            temperature=0.8,
-            max_tokens=1024,
-            top_p=0.9,
-        )
-        
-        reply = response.choices[0].message.content
-        
-        advice = _extract_advice_from_response(reply)
-        quote = QUOTES[hash(user_message) % len(QUOTES)]
-        
-        return {
-            "reply": reply,
-            "mood": mood,
-            "is_crisis": False,
-            "helplines": {},
-            "advice": advice,
-            "quote": quote,
-            "source": "groq",
-        }
-        
-    except Exception as e:
-        print(f"Groq API error: {e}")
-        return _fallback_response(mood, user_profile)
+    return _fallback_response(mood, user_profile)
 
-
-def _extract_advice_from_response(reply: str) -> List[str]:
-    advice = []
-    
-    patterns = [
-        r'try (?:[^.]*\b){1,3}',
-        r'consider[^.]+\.',
-        r'how about[^.]+\?',
-        r'perhaps[^.]+\?',
-        r'you could[^.]+\.',
-        r'it might help[^.]+\.',
-        r'start with[^.]+\.',
-        r'take a[^.]+\.',
-    ]
-    
-    for pattern in patterns:
-        matches = re.findall(pattern, reply.lower())
-        for match in matches[:1]:
-            cleaned = match.strip()
-            if cleaned and len(cleaned) > 10:
-                advice.append(cleaned.capitalize())
-    
-    if not advice:
-        advice = [
-            "Take a few deep breaths to center yourself.",
-            "Consider writing down what's troubling you.",
-            "Reach out to someone you trust.",
-        ]
-    
-    return advice[:3]
 
 
 def _fallback_response(mood: str, user_profile: Dict) -> Dict[str, Any]:
@@ -298,7 +178,7 @@ I'm here for whatever you need—whether that's practical advice, someone to lis
         "is_crisis": False,
         "helplines": {},
         "advice": advice_map.get(mood, advice_map["neutral"]),
-        "quote": QUOTES[hash(mood) % len(QUOTES)],
+        "quote": random.choice(QUOTES),
         "source": "fallback",
     }
 
