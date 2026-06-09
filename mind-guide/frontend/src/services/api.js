@@ -1,4 +1,8 @@
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
+const DEFAULT_API_BASE = import.meta.env.PROD
+  ? 'https://mind-guide-1.onrender.com'
+  : 'http://127.0.0.1:8000';
+
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE).replace(/\/$/, '');
 
 function getToken() {
   return localStorage.getItem('token');
