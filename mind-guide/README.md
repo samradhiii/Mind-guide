@@ -37,6 +37,7 @@ uvicorn main:app --reload --port 8000
 Optional environment variable:
 
 - `JWT_SECRET` (recommended for non-dev)
+- `FRONTEND_ORIGINS` (comma-separated frontend URLs allowed by CORS, for example `https://your-frontend.onrender.com`)
 
 ### 2) Frontend
 
@@ -54,6 +55,28 @@ Frontend runs on:
 Backend runs on:
 
 - `http://127.0.0.1:8000`
+
+For local frontend API configuration, create `frontend/.env` if needed:
+
+```bash
+VITE_API_BASE_URL=http://127.0.0.1:8000
+```
+
+## Deploy Frontend on Render
+
+The frontend is configured to call your deployed backend:
+
+- `https://mind-guide-1.onrender.com`
+
+You can deploy the frontend as a Render Static Site with these settings:
+
+- Root Directory: `frontend`
+- Build Command: `npm ci && npm run build`
+- Publish Directory: `dist`
+- Environment Variable: `VITE_API_BASE_URL=https://mind-guide-1.onrender.com`
+- Rewrite Rule: `/*` -> `/index.html`
+
+This repository also includes `render.yaml` with the same Static Site settings. Render's docs recommend a rewrite to `/index.html` for React Router SPAs so direct visits to routes like `/dashboard` work after deployment.
 
 ## Core Features
 
@@ -84,4 +107,4 @@ All protected endpoints require:
 ## Notes
 
 - JSON storage files live in `backend/storage/`
-- CORS is enabled for `http://localhost:5173`
+- CORS is enabled for local Vite, configured `FRONTEND_ORIGINS`, and Render-hosted frontend URLs

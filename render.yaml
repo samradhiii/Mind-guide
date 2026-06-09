@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: mind-guide-frontend
+    runtime: static
+    rootDir: mind-guide/frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        value: https://mind-guide-1.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

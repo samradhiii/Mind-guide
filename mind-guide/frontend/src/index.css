@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+  backdrop-filter: blur(10px);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mood-burnout { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
+.mood-anxious { background: linear-gradient(135deg, #feca57, #ff9f43); }
+.mood-stressed { background: linear-gradient(135deg, #ff9ff3, #f368e0); }
+.mood-sad { background: linear-gradient(135deg, #5f27cd, #341f97); }
+.mood-happy { background: linear-gradient(135deg, #10ac84, #1dd1a1); }
+.mood-neutral { background: linear-gradient(135deg, #576574, #8395a7); }

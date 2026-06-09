@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import json
 import os
 import re
-import random
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Any
 
@@ -100,7 +100,8 @@ def detect_mood(text: str) -> str:
     return "neutral"
 
 
-SYSTEM_PROMPT = """You are MindGuide, an empathetic and supportive AI wellness counselor. You are warm, understanding, and non-judgmental.
+def _build_counselor_system_prompt() -> str:
+    return """You are MindGuide, an empathetic and supportive AI wellness counselor. You are warm, understanding, and non-judgmental.
 
 Your approach:
 1. Acknowledge the user's feelings with genuine empathy
@@ -122,53 +123,48 @@ Keep responses conversational, warm, and around 2-4 paragraphs unless the situat
 def _get_groq_client() -> Optional[Any]:
     if not GROQ_AVAILABLE:
         return None
+    
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        return None
+    
     try:
-        api_key = os.getenv("GROQ_API_KEY")
-        if not api_key:
-            return None
         return Groq(api_key=api_key)
     except Exception:
         return None
 
 
-async def generate_counselor_reply(user_message: str, user_profile: Dict) -> Dict[str, Any]:
-    crisis = detect_crisis(user_message)
-    mood = detect_mood(user_message)
-    name = user_profile.get("name", "friend")
-
-    if crisis.is_crisis:
-        return {
-            "mood": mood,
-            "is_crisis": True,
-            "reply": _build_crisis_response(name, crisis.matched_terms),
-            "helplines": HELPLINES,
-            "advice": [
-                "Your life matters. Please reach out for help.",
-                "Call a crisis helpline or go to your nearest emergency room.",
-                "If alone, stay on the line with someone you trust.",
-                "You're not alone. Support is available right now.",
-            ],
-            "quote": "You matter. Your feelings are valid. Help is available.",
-            "source": "crisis",
-        }
-
+async def _generate_llm_response(
+    user_message: str,
+    user_profile: Dict[str, str],
+    mood: str,
+    chat_history: Optional[List[Dict]] = None
+) -> Dict[str, Any]:
     client = _get_groq_client()
-
+    
     if not client:
         return _fallback_response(mood, user_profile)
-
-    messages = [
-        {"role": "system", "content": SYSTEM_PROMPT},
-    ]
-
+    
     name = user_profile.get("name", "friend")
+    
+    messages = [
+        {"role": "system", "content": _build_counselor_system_prompt()},
+    ]
+    
+    if chat_history:
+        for msg in chat_history[-6:]:
+            role = "assistant" if msg.get("role") == "assistant" else "user"
+            messages.append({
+                "role": role,
+                "content": msg.get("message", "")
+            })
+    
     user_context = f"\n\nContext: The user is named {name}, {user_profile.get('age', 'unknown')} years old. They described themselves as: {user_profile.get('intro', 'N/A')}"
-
     messages.append({
-        "role": "user",
+        "role": "user", 
         "content": user_message + user_context
     })
-
+    
     try:
         response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
@@ -177,11 +173,12 @@ async def generate_counselor_reply(user_message: str, user_profile: Dict) -> Dic
             max_tokens=1024,
             top_p=0.9,
         )
-
+        
         reply = response.choices[0].message.content
-        advice = _extract_advice(reply)
-        quote = random.choice(QUOTES)
-
+        
+        advice = _extract_advice_from_response(reply)
+        quote = QUOTES[hash(user_message) % len(QUOTES)]
+        
         return {
             "reply": reply,
             "mood": mood,
@@ -191,14 +188,15 @@ async def generate_counselor_reply(user_message: str, user_profile: Dict) -> Dic
             "quote": quote,
             "source": "groq",
         }
-
+        
     except Exception as e:
         print(f"Groq API error: {e}")
         return _fallback_response(mood, user_profile)
 
 
-def _extract_advice(reply: str) -> List[str]:
+def _extract_advice_from_response(reply: str) -> List[str]:
     advice = []
+    
     patterns = [
         r'try (?:[^.]*\b){1,3}',
         r'consider[^.]+\.',
@@ -209,27 +207,27 @@ def _extract_advice(reply: str) -> List[str]:
         r'start with[^.]+\.',
         r'take a[^.]+\.',
     ]
-
+    
     for pattern in patterns:
         matches = re.findall(pattern, reply.lower())
         for match in matches[:1]:
             cleaned = match.strip()
             if cleaned and len(cleaned) > 10:
                 advice.append(cleaned.capitalize())
-
+    
     if not advice:
         advice = [
             "Take a few deep breaths to center yourself.",
             "Consider writing down what's troubling you.",
             "Reach out to someone you trust.",
         ]
-
+    
     return advice[:3]
 
 
 def _fallback_response(mood: str, user_profile: Dict) -> Dict[str, Any]:
     name = user_profile.get("name", "friend")
-
+    
     responses = {
         "anxious": f"""{name}, I hear that you're feeling anxious right now. Anxiety can feel overwhelming, but you're not alone in this.
 
@@ -282,9 +280,9 @@ How are you really doing beneath the surface? Is there something specific on you
 
 I'm here for whatever you need—whether that's practical advice, someone to listen, or just a place to vent."""
     }
-
+    
     reply = responses.get(mood, responses["neutral"])
-
+    
     advice_map = {
         "anxious": ["Try 4-7-8 breathing: inhale 4s, hold 7s, exhale 8s", "Name 5 things you can see, 4 you can touch, 3 you can hear"],
         "stressed": ["Make a quick list of what's in your control", "Take a 5-minute stretch break"],
@@ -293,16 +291,40 @@ I'm here for whatever you need—whether that's practical advice, someone to lis
         "happy": ["Write down what made today good", "Share the positivity with someone"],
         "neutral": ["What's one small thing you could do today?", "Remember to stay hydrated and rested"],
     }
-
+    
     return {
         "reply": reply,
         "mood": mood,
         "is_crisis": False,
         "helplines": {},
         "advice": advice_map.get(mood, advice_map["neutral"]),
-        "quote": random.choice(QUOTES),
+        "quote": QUOTES[hash(mood) % len(QUOTES)],
         "source": "fallback",
     }
+
+
+async def generate_counselor_reply(user_message: str, user_profile: Dict) -> Dict[str, Any]:
+    crisis = detect_crisis(user_message)
+    mood = detect_mood(user_message)
+    name = user_profile.get("name", "friend")
+    
+    if crisis.is_crisis:
+        return {
+            "mood": mood,
+            "is_crisis": True,
+            "reply": _build_crisis_response(name, crisis.matched_terms),
+            "helplines": HELPLINES,
+            "advice": [
+                "Your life matters. Please reach out for help.",
+                "Call a crisis helpline or go to your nearest emergency room.",
+                "If alone, stay on the line with someone you trust.",
+                "You're not alone. Support is available right now.",
+            ],
+            "quote": "You matter. Your feelings are valid. Help is available.",
+            "source": "crisis",
+        }
+    
+    return await _generate_llm_response(user_message, user_profile, mood)
 
 
 def _build_crisis_response(name: str, matched_terms: List[str]) -> str:
@@ -322,6 +344,11 @@ If you're alone, please stay where you are and reach out. You don't have to face
 Is there someone you can call right now? Or would you like me to share the crisis helpline numbers for your country?
 
 You reached out. That took courage. Let's use that courage to get you the help you deserve."""
+
+
+def _advice_for_mood(mood: str) -> List[str]:
+    advice = _fallback_response(mood, {})["advice"]
+    return advice
 
 
 def simulate_future(habits: List[str], months: int, baseline: Dict[str, float]) -> Dict[str, Any]:

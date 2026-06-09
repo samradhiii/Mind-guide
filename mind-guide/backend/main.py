@@ -14,20 +14,30 @@ from utils import load_json, save_json, utc_now_iso
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STORAGE_DIR = os.path.join("/tmp", "mind_guide_storage") if os.getenv("VERCEL") else os.path.join(BASE_DIR, "storage")
+STORAGE_DIR = os.path.join(BASE_DIR, "storage")
 USERS_FILE = os.path.join(STORAGE_DIR, "users.json")
 CHECKINS_FILE = os.path.join(STORAGE_DIR, "checkins.json")
 CHATS_FILE = os.path.join(STORAGE_DIR, "chats.json")
 
-os.makedirs(STORAGE_DIR, exist_ok=True)
-
 
 app = FastAPI(title="MIND-GUIDE API", version="1.0.0")
 
+DEFAULT_CORS_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+configured_cors_origins = [
+    origin.strip().rstrip("/")
+    for origin in os.getenv("FRONTEND_ORIGINS", "").split(",")
+    if origin.strip()
+]
+allowed_cors_origins = configured_cors_origins or ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=DEFAULT_CORS_ORIGINS + allowed_cors_origins,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -129,6 +139,11 @@ def _public_profile(user: Dict) -> Dict:
 @app.get("/health")
 def health() -> Dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/")
+def root() -> Dict[str, str]:
+    return {"status": "ok", "service": "MIND-GUIDE API"}
 
 
 @app.post("/signup")
@@ -390,3 +405,8 @@ def insights(user_id: str = Depends(get_current_user_id)) -> Dict:
         },
         "recent_checkins": recent_checkins,
     }
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
